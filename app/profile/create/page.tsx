@@ -1,13 +1,9 @@
 import FormInput from "@/components/form/Forminput";
 import { SubmitButton } from "@/components/form/Buttons";
 import FormContainer from "@/components/form/FormContainer";
+import { createProfileAction } from "@/actions/actions";
 
-const createProfileAction = async (prevState: unknown, formData: FormData) => {
-  "use server";
-  const firstName = formData.get("firstName") as string;
-  console.log("miumiu!!!!", firstName);
-  return { message: "Create Profile Success!!!" };
-};
+
 
 const createPage = () => {
   return (
@@ -24,7 +20,7 @@ const createPage = () => {
                 defaultValue=""
               />
               <FormInput
-                name="lastname"
+                name="lastName"
                 label="Last Name"
                 type="text"
                 placeholder="Last Name"
