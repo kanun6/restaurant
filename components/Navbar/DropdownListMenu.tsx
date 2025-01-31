@@ -21,40 +21,40 @@ const DropdownListMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          <AlignLeft />
-          <Usericon />
+          <div className="flex items-center gap-2">
+            <AlignLeft />
+            <Usericon />
+          </div>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent asChild>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
-        <SignedOut>
-          <DropdownMenuItem>
-            <SignInButton mode='modal'>
-              <button>Login</button>
-            </SignInButton>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <SignUpButton mode='modal'>
-              <button>Register</button>
-            </SignUpButton>
-          </DropdownMenuItem>
-        </SignedOut>
-
-        <SignedIn>
-          {links.map((items, index) => {
-            return (
+        <div>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <SignedOut>
+            <DropdownMenuItem>
+              <SignInButton mode="modal">
+                <button>Login</button>
+              </SignInButton>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <SignUpButton mode="modal">
+                <button>Register</button>
+              </SignUpButton>
+            </DropdownMenuItem>
+          </SignedOut>
+          <SignedIn>
+            {links.map((items, index) => (
               <DropdownMenuItem key={index}>
                 <Link href={items.href}>{items.label}</Link>
               </DropdownMenuItem>
-            );
-          })}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <SignOutLinks />
-          </DropdownMenuItem>
-        </SignedIn>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <SignOutLinks />
+            </DropdownMenuItem>
+          </SignedIn>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
