@@ -25,7 +25,7 @@ const DropdownListMenu = () => {
           <Usericon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent asChild>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
         <SignedOut>

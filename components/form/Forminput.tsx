@@ -1,11 +1,26 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const forminput = () => {
+
+type FormInputProps ={
+    name:string;
+    type:string;
+    label?:string;
+    defaultValue : string;
+    placeholder?: string;
+}
+
+const forminput = (props:FormInputProps) => {
+    const { name,type,label,defaultValue,placeholder } = props
   return (
     <div className="mb-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input name="firstName" type="text"/>
+                    <Label htmlFor={name}>{label}</Label>
+                    <Input 
+                    name={name} 
+                    type={type}
+                    placeholder={placeholder}
+                    defaultValue={defaultValue}
+                    />
                 </div>
   )
 }
