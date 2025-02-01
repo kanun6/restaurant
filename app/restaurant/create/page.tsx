@@ -2,13 +2,14 @@ import FormInput from "@/components/form/Forminput";
 import { SubmitButton } from "@/components/form/Buttons";
 import FormContainer from "@/components/form/FormContainer";
 import { createRestaurantAction } from "@/actions/actions";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+// import { currentUser } from "@clerk/nextjs/server";
+// import { redirect } from "next/navigation";
+// import Maprestaurant from "@/components/map/Maprestaurant";
 // import CategoryInput from "@/components/form/CategoryInput";
 
 const createPage = async () => {
-    const user = await currentUser()
-    if(user?.privateMetadata.hasProfile) redirect('/')
+    // const user = await currentUser()
+    // if(user?.privateMetadata.hasProfile) redirect('/')
     
   return (
     <section>
@@ -41,6 +42,8 @@ const createPage = async () => {
             />
             {/* <CategoryInput /> */}
           </div>
+          
+          {/* <Maprestaurant /> */}
           <SubmitButton text="Create Restaurant" size="lg" className="" />
         </FormContainer>
       </div>

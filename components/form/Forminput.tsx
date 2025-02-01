@@ -6,7 +6,7 @@ type FormInputProps ={
     name:string;
     type:string;
     label?:string;
-    defaultValue : string;
+    defaultValue? : string;
     placeholder?: string;
 }
 
