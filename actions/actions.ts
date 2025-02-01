@@ -59,3 +59,40 @@ export const createProfileAction = async (
   }
   redirect('/')
 };
+
+
+export const createRestaurantAction = async (
+  prevState: unknown,
+  formData: FormData
+): Promise<{ message: string }> => {
+  try {
+    // ✅ ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
+    const user = await currentUser();
+    if (!user) throw new Error("Please login");
+
+    // ✅ ดึงค่าจาก FormData
+    const name = formData.get("name") as string;
+    const location = formData.get("location") as string;
+    const contact = formData.get("contact") as string;
+
+    if (!name || !location || !contact) {
+      throw new Error("All fields are required");
+    }
+
+    // ✅ บันทึกข้อมูลร้านอาหารลงในฐานข้อมูล
+    await prisma.restaurant.create({
+      data: {
+        name,
+        location,
+        contact,
+      },
+    });
+
+    console.log("Restaurant created successfully:", { name, location, contact });
+
+    return { message: "Create Restaurant Success!!!" };
+  } catch (error) {
+    console.error("Error creating restaurant:", error);
+    return { message: error instanceof Error ? error.message : "An error occurred" };
+  }
+};
