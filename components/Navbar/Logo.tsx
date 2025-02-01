@@ -1,13 +1,20 @@
-import Link from "next/link"
-import { Button } from "../ui/button"
+import Link from "next/link";
+import Image from "next/image"; // ✅ นำเข้า next/image
+
 
 const Logo = () => {
   return (
-    <Button size='sm' asChild>
-        <Link href='/' className="text-2xl">
-          Logo
-        </Link>
-    </Button>
+    
+      <Link href="/">
+        <Image sizes="sm" 
+          src="/images/logo_restaurant.png"  // ✅ ใช้ path ของโลโก้
+          alt="Restaurant Logo"
+          width={40}  // ✅ ปรับขนาดให้เหมาะสม
+          height={40}
+        />
+      </Link>
+    
   );
 };
-export default Logo
+
+export default Logo;

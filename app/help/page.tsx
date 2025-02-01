@@ -1,7 +1,7 @@
 const HelpPage = () => {
   return (
-    <div>HelpPage
-    
+    <div>
+      HelpPage    
     </div>
   )
 }
