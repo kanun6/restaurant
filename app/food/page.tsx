@@ -1,6 +1,8 @@
+import FoodContainer from "@/components/home/FoodConntainer"
+
 const foodPage = () => {
   return (
-    <div>foodPage</div>
+    <FoodContainer />
   )
 }
 export default foodPage
