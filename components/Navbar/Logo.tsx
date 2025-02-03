@@ -9,8 +9,8 @@ const Logo = () => {
         <Image sizes="sm" 
           src="/images/logo_restaurant.png"  // ✅ ใช้ path ของโลโก้
           alt="Restaurant Logo"
-          width={40}  // ✅ ปรับขนาดให้เหมาะสม
-          height={40}
+          width={75}  // ✅ ปรับขนาดให้เหมาะสม
+          height={75}
         />
       </Link>
     
