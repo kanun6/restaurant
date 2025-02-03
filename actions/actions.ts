@@ -96,3 +96,12 @@ export const createRestaurantAction = async (
     return { message: error instanceof Error ? error.message : "An error occurred" };
   }
 };
+
+export const fetchFoods = async()=>{
+  const food = await db.food.findMany({
+    orderBy:{
+      createdAT: 'desc'
+    }
+  })
+  return food
+}

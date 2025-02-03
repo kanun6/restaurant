@@ -1,10 +1,17 @@
+// import FoodConntainer from "@/components/home/FoodConntainer";
 
-const HomePage = () => {
+const page = () => {
+
+
   return (
-    <div>
-        HomePage
-    </div>
+  <>
+  {/* <FoodConntainer /> */}
+  <div>
+    <h1>HomePage</h1>
+  </div>
 
-  )
-}
-export default HomePage
+
+  </>
+  );
+};
+export default page;
