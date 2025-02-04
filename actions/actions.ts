@@ -41,7 +41,7 @@ export const createProfileAction = async (
         profileImage: user.imageUrl ?? "",
         firstName: validateField.firstName,
         lastName: validateField.lastName,
-        username: validateField.userName, // ✅ ใช้ "userName" ตาม schema.prisma
+        username: validateField.userName, 
       }
      })
      const client = await clerkClient()
@@ -66,11 +66,11 @@ export const createRestaurantAction = async (
   formData: FormData
 ): Promise<{ message: string }> => {
   try {
-    // ✅ ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
+    
     const user = await currentUser();
     if (!user) throw new Error("Please login");
 
-    // ✅ ดึงค่าจาก FormData
+    
     const name = formData.get("name") as string;
     const location = formData.get("location") as string;
     const contact = formData.get("contact") as string;
@@ -79,7 +79,7 @@ export const createRestaurantAction = async (
       throw new Error("All fields are required");
     }
 
-    // ✅ บันทึกข้อมูลร้านอาหารลงในฐานข้อมูล
+    
     await prisma.restaurant.create({
       data: {
         name,

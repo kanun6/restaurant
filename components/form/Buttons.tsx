@@ -12,8 +12,7 @@ type SubmitButtonProps = {
 };
 
 export const SubmitButton = ({ className, size, text }: SubmitButtonProps) => {
-  const { pending } = useFormStatus(); // ใช้ useFormStatus() แทน useFormState()
-
+  const { pending } = useFormStatus(); 
   return (
     <Button
       disabled={pending}

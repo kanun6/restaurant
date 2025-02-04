@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image"; // ✅ นำเข้า next/image
+import Image from "next/image"; 
 
 
 const Logo = () => {
@@ -7,9 +7,9 @@ const Logo = () => {
     
       <Link href="/">
         <Image sizes="sm" 
-          src="/images/logo_restaurant.png"  // ✅ ใช้ path ของโลโก้
+          src="/images/logo_restaurant.png"  
           alt="Restaurant Logo"
-          width={75}  // ✅ ปรับขนาดให้เหมาะสม
+          width={75}  
           height={75}
         />
       </Link>

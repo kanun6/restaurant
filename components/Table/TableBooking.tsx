@@ -8,7 +8,7 @@ const TableBooking = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [guests, setGuests] = useState(1);
-  const [tableId, setTableId] = useState(""); // เพิ่ม ID ของโต๊ะที่ต้องการจอง
+  const [tableId, setTableId] = useState(""); 
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
