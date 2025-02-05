@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react"; // ใช้ไอคอนหัวใจ
+import { Heart } from "lucide-react"; 
 
 const foodItems = [
   { id: 1, image: "/images/Food1.jpg", name: "อาหาร 1", price: "฿100" },
