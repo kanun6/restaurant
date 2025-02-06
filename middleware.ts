@@ -1,13 +1,19 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+// import { NextResponse } from "next/server";
 
-
+const isAdminRoute = createRouteMatcher(['/dashboard(.*)'])
 
 const isProtectedRoute = createRouteMatcher([
-    '/favorite(.*)', 
+    '/favorite(.*)', '/dashboard(.*)'
 ])
 
 export default clerkMiddleware(async (auth, req) => {
     if (isProtectedRoute(req)) await auth.protect()
+
+      // if (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== 'marketing_admin') {
+      //   const url = new URL('/', req.url)
+      //   return NextResponse.redirect(url)
+      // }
   })
 
 export const config = {
