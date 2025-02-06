@@ -13,71 +13,37 @@ model Profile {
   clerkId      String   @unique
   firstName    String
   lastName     String
-  username     String   
+  username     String   @unique
   email        String   @unique
   profileImage String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  reservations Reservation[]
-  orders       Order[] // ✅ เพิ่มความสัมพันธ์ไปยัง Order
-}
-
-model Restaurant {
-  id        String   @id @default(uuid())
-  name      String
-  location  String
-  contact   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   tables Table[]
   menus  Menu[]
 }
 
 model Table {
-  id           String        @id @default(uuid())
-  number       Int
-  capacity     Int
-  status       String        @default("available") // available, reserved, occupied
-  restaurant   Restaurant    @relation(fields: [restaurantId], references: [id])
-  restaurantId String
-  reservations Reservation[]
-}
-
-model Reservation {
-  id              String   @id @default(uuid())
-  profile         Profile  @relation(fields: [profileId], references: [id])
-  profileId       String
-  table           Table    @relation(fields: [tableId], references: [id])
-  tableId         String
-  reservationDate DateTime
-  status          String   @default("pending") // pending, confirmed, canceled
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model Menu {
-  id           String     @id @default(uuid())
-  name         String
-  description  String?
-  price        Float
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  restaurantId String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-
-  orders Order[]
-}
-
-model Order {
   id        String   @id @default(uuid())
-  profile   Profile  @relation(fields: [profileId], references: [id])
-  profileId String
-  menu      Menu     @relation(fields: [menuId], references: [id])
-  menuId    String
-  quantity  Int
-  status    String   @default("pending") // pending, completed, canceled
+  number    Int
+  capacity  Int
+  status    String   @default("available") // available, reserved, occupied
+  profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Menu {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  price        Float
+  profile      Profile? @relation(fields: [profileId], references: [id])
+  profileId    String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
