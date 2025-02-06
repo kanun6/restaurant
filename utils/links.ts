@@ -12,7 +12,7 @@ export const links:NavLinks[] = [
   { href: "/favorite", label: "favorite" },
   { href: "/about", label: "about" },
   { href: "/help", label: "help" },
-  { href: "/add food", label: "add food", role: "marketing_admin" },
-  { href: "/add table", label: "add table", role: "marketing_admin" },
+  { href: "/add_food", label: "add food", role: "marketing_admin" },
+  { href: "/add_table", label: "add table", role: "marketing_admin" },
 ];
 
