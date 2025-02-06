@@ -1,5 +1,6 @@
-import { AlignLeft } from "lucide-react";
+"use client";
 
+import { AlignLeft } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,13 @@ import { Button } from "../ui/button";
 import Usericon from "./Usericon";
 import Link from "next/link";
 import { links } from "@/utils/links";
-
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useUser, SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import SignOutLinks from "./SignOutLinks";
 
 const DropdownListMenu = () => {
+  const { user } = useUser();
+  const role = user?.publicMetadata?.role || "user";  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,6 +34,8 @@ const DropdownListMenu = () => {
       <DropdownMenuContent asChild>
         <div>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
+
+          {/* สำหรับผู้ที่ยังไม่ได้ Login */}
           <SignedOut>
             <DropdownMenuItem>
               <SignInButton mode="modal">
@@ -43,12 +48,20 @@ const DropdownListMenu = () => {
               </SignUpButton>
             </DropdownMenuItem>
           </SignedOut>
+
+          {/*  สำหรับผู้ที่ Login แล้ว */}
           <SignedIn>
-            {links.map((items, index) => (
-              <DropdownMenuItem key={index}>
-                <Link href={items.href}>{items.label}</Link>
-              </DropdownMenuItem>
-            ))}
+            {links.map((item, index) => {
+              //  เช็ค Role ถ้าลิงก์นี้สำหรับ Admin แต่ผู้ใช้ไม่ใช่ Admin จะไม่แสดง
+              if (item.role && item.role !== role) return null;
+
+              return (
+                <DropdownMenuItem key={index}>
+                  <Link href={item.href}>{item.label}</Link>
+                </DropdownMenuItem>
+              );
+            })}
+
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <SignOutLinks />
@@ -59,4 +72,5 @@ const DropdownListMenu = () => {
     </DropdownMenu>
   );
 };
+
 export default DropdownListMenu;
