@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react"; 
 
 const foodItems = [
-  { id: 1, image: "/images/Food1.jpg", name: "อาหาร 1", price: "฿100" },
+  { id: 1, image: "/images/แกงกะหรี่หรือมัสมั่นไก่.jpg", name: "อาหาร 1", price: "฿100" },
   { id: 2, image: "/images/Food2.jpg", name: "อาหาร 2", price: "฿120" },
   { id: 3, image: "/images/Food3.jpg", name: "อาหาร 3", price: "฿150" },
   { id: 4, image: "/images/Food4.jpg", name: "อาหาร 4", price: "฿180" },
