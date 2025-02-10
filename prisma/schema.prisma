@@ -9,8 +9,8 @@ datasource db {
 }
 
 model Profile {
-  id           String   @id @default(uuid())
-  clerkId      String   @unique
+  id           String   @id @default(uuid())  // ใช้ id เป็น primary key
+  clerkId      String   @unique               // คงไว้สำหรับ Clerk
   firstName    String
   lastName     String
   username     String   @unique
@@ -19,31 +19,33 @@ model Profile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  tables Table[]
-  menus  Menu[]
+  foods        Food[]    // เปลี่ยนชื่อจาก landmarks เป็น foods
+  favorites    Favorite[]
 }
 
-model Table {
+model Food {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  image       String
+  price       Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String     // อ้างอิงไปที่ Profile.id
+
+  favorites   Favorite[]
+}
+
+model Favorite {
   id        String   @id @default(uuid())
-  number    Int
-  capacity  Int
-  status    String   @default("available") // available, reserved, occupied
-  profile   Profile? @relation(fields: [profileId], references: [id])
-  profileId String?
-  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-model Menu {
-  id           String   @id @default(uuid())
-  name         String
-  description  String?
-  price        Float
-  profile      Profile? @relation(fields: [profileId], references: [id])
-  profileId    String?
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String   // อ้างอิงไปที่ Profile.id
 
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  foodId    String   // อ้างอิงไปที่ Food.id
+}

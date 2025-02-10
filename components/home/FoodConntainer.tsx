@@ -19,12 +19,14 @@ const FoodContainer = () => {
       let updatedFavorites;
 
       if (isFavorite) {
-        updatedFavorites = prevFavorites.filter((item) => item.id !== foodItem.id);
+        updatedFavorites = prevFavorites.filter(
+          (item) => item.id !== foodItem.id
+        );
       } else {
         updatedFavorites = [...prevFavorites, foodItem];
       }
 
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites)); 
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
       return updatedFavorites;
     });
   };

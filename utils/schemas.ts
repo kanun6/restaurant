@@ -14,12 +14,30 @@ export const profileSchema = z.object({
     .min(2, { message: "userName อักษรต้องมีอย่างน้อย 2 ตัวขึ้นไป" }),
 });
 
+const validatedImage = () => {
+  const maxFileSize = 1024 * 1024;
+  return z.instanceof(File).refine((File) => {
+    return File.size <= maxFileSize;
+  }, "File size must be less than 1MB");
+};
 
+export const imageSchema = z.object({
+  image: validatedImage(),
+});
 
+export const foodSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "ชื่อต้องมากกว่า 2 ตัวขึ้นไป" })
+    .max(30, { message: "ชื่อต้องน้อยกว่า 30 ตัว" }),
+  description: z
+    .string()
+    .min(2, { message: "รายละเอียดต้องมากกว่า 2 ตัวขึ้นไป" })
+    .max(200, { message: "รายละเอียดต้องน้อยกว่า 30 ตัว" }),
+  price: z.coerce.number().int().min(0, { message: "ราคาต้องมากกว่า 0" }),
+});
 
-export const ValidateEithZode = <T>(
-    schema: ZodSchema<T>, 
-    data: unknown):T => {
+export const ValidateEithZode = <T>(schema: ZodSchema<T>, data: unknown): T => {
   const result = schema.safeParse(data);
   if (!result.success) {
     const errors = result.error?.errors.map((error) => error.message);

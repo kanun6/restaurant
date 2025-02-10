@@ -1,9 +1,10 @@
 "use server";
 
-import { profileSchema, ValidateEithZode } from "@/utils/schemas";
+import { foodSchema, imageSchema, profileSchema, ValidateEithZode } from "@/utils/schemas";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import {prisma} from '@/lib/prisma'
 import { redirect } from "next/navigation";
+import { uploadFile } from "@/utils/supabase";
 
 const getAuthUser = async ()=>{
   const user = await currentUser()
@@ -60,4 +61,37 @@ export const createProfileAction = async (
   redirect('/')
 };
 
+
+export const AddFoodAction = async (
+  prevState: unknown,
+  formData: FormData
+): Promise<{message: string}> => {
+  try {
+    const user = await getAuthUser()
+    const rawData = Object.fromEntries(formData);
+    const file = formData.get('image') as File
+    
+
+    const validatedFile = ValidateEithZode(imageSchema, {image:file})
+    const validateField = ValidateEithZode(foodSchema, rawData);
+    // console.log("validated", validatedFile);
+    // console.log("validated", validateField);
+
+    const fullPath = await uploadFile(validatedFile.image)
+    console.log(fullPath)
+
+    
+
+
+
+
+    
+
+    return { message: "Add Food Success!!!" };
+  } catch (error) {
+    // console.log(error);
+    return renderError(error) 
+  }
+  // redirect('/')
+};
 

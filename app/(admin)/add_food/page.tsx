@@ -1,34 +1,41 @@
-import { checkRole } from "@/utils/roles";
-import { redirect } from "next/navigation";
+import FormInput from "@/components/form/Forminput";
+import { SubmitButton } from "@/components/form/Buttons";
+import FormContainer from "@/components/form/FormContainer";
+import { AddFoodAction } from "@/actions/actions";
+import TextAreainput from "@/components/form/TextAreainput";
+import ImageInput from "@/components/form/ImageInput";
+// import { currentUser } from "@clerk/nextjs/server";
+// import { redirect } from "next/navigation";
 
-export default async function AdminAddFood() {
-  // Protect the page from users who are not admins
-  const isAdmin = await checkRole("marketing_admin");
-  if (!isAdmin) {
-    redirect("/");
-  }
-
+const createPage = async () => {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Add New Food</h1>
-      <form className="space-y-4">
-        <input
-          type="text"
-          placeholder="Food Name"
-          className="border p-2 w-full"
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          className="border p-2 w-full"
-        />
-        <button
-          type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded"
-        >
-          Add Food
-        </button>
-      </form>
-    </div>
+    <section>
+      <h1 className="text-2xl font-semibold mb-8 capitalize">Add Food</h1>
+      <div className="border p-8 rounded-md">
+        <FormContainer action={AddFoodAction}>
+          <div className="grid md:grid-cols-2 gap-4 mt-4">
+            <FormInput
+              name="name"
+              label="Food Name"
+              type="text"
+              placeholder="Food Name"
+              defaultValue=""
+            />
+            <FormInput
+              name="price"
+              label="Price"
+              type="number"
+              placeholder="Price"
+              defaultValue=""
+            />
+          </div>
+          <ImageInput />
+          <TextAreainput name="description"/>
+
+          <SubmitButton text="Add Food" size="lg" className="" />
+        </FormContainer>
+      </div>
+    </section>
   );
-}
+};
+export default createPage;
