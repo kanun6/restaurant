@@ -5,16 +5,16 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react"; 
 
 const foodItems = [
-  { id: 1, image: "/images/Food1.jpg", name: "อาหาร 1", price: "฿100" },
-  { id: 2, image: "/images/Food2.jpg", name: "อาหาร 2", price: "฿120" },
-  { id: 3, image: "/images/Food3.jpg", name: "อาหาร 3", price: "฿150" },
-  { id: 4, image: "/images/Food4.jpg", name: "อาหาร 4", price: "฿180" },
-  { id: 5, image: "/images/Food5.jpg", name: "อาหาร 5", price: "฿200" },
-  { id: 6, image: "/images/Food6.jpg", name: "อาหาร 6", price: "฿250" },
-  { id: 7, image: "/images/Food7.jpg", name: "อาหาร 7", price: "฿300" },
-  { id: 8, image: "/images/Food8.jpg", name: "อาหาร 8", price: "฿350" },
-  { id: 9, image: "/images/Food9.jpg", name: "อาหาร 9", price: "฿400" },
-  { id: 10, image: "/images/Food10.jpg", name: "อาหาร 10", price: "฿450" },
+  { id: 1, image: "/images/ยำหมึก.jpg", name: "อาหาร 1", price: "฿100" },
+  { id: 2, image: "/images/แกงเห็ดสามอย่างใส่ฟักทอง.jpg", name: "อาหาร 2", price: "฿120" },
+  { id: 3, image: "/images/ขนมจีน.jpg", name: "อาหาร 3", price: "฿150" },
+  { id: 4, image: "/images/ไข่กระทะ.jpg", name: "อาหาร 4", price: "฿180" },
+  { id: 5, image: "/images/ชุดอาหารไทย.jpg", name: "อาหาร 5", price: "฿200" },
+  { id: 6, image: "/images/ชุดอาหารอีสาร.jpg", name: "อาหาร 6", price: "฿250" },
+  { id: 7, image: "/images/ต้มยำกุ้ง.jpg", name: "อาหาร 7", price: "฿300" },
+  { id: 8, image: "/images/ปลาแซลมอน.jpg", name: "อาหาร 8", price: "฿350" },
+  { id: 9, image: "/images/ผัดผักบุ้ง.jpg", name: "อาหาร 9", price: "฿400" },
+  { id: 10, image: "/images/แกงกะหรี่หรือมัสมั่นไก่.jpg", name: "อาหาร 10", price: "฿450" },
 ];
 
 const FoodList = ({ favorites, onToggleFavorite }) => {
