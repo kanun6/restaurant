@@ -5,6 +5,8 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import {prisma} from '@/lib/prisma'
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
+import { date } from "zod";
+import { profile } from "console";
 
 const getAuthUser = async ()=>{
   const user = await currentUser()
@@ -79,19 +81,32 @@ export const AddFoodAction = async (
 
     const fullPath = await uploadFile(validatedFile.image)
     console.log(fullPath)
-
-    
-
-
-
-
-    
-
-    return { message: "Add Food Success!!!" };
+    await prisma.food.create({
+      data:{
+        name: validateField.name,
+        price: validateField.price,
+        description: validateField.description,
+        image:fullPath,
+        profileId:user.id
+      }
+    })
+    // return { message: "Add Food Success!!!" };
   } catch (error) {
     // console.log(error);
     return renderError(error) 
   }
-  // redirect('/')
+  redirect('/')
 };
+
+
+export const fetchFoods = async(
+  
+)=>{
+  const foods = await prisma.food.findMany({
+    orderBy:{
+      createdAt: 'desc'
+    }
+  })
+  return foods
+}
 

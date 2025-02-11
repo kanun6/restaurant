@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 
 const Background = () => {
   const images = [
-    "/images/bg1.png",
-    "/images/bg2.jpg",
-    "/images/bg3.jpg",
-    "/images/bg4.jpg",
-    "/images/bg5.jpg",
-    "/images/bg6.jpg",
-    "/images/bg7.jpg",
-    "/images/bg8.jpg"
+    // "/images/bg1.png",
+    // "/images/bg2.jpg",
+    // "/images/bg3.jpg",
+    // "/images/bg4.jpg",
+    // "/images/bg5.jpg",
+    // "/images/bg6.jpg",
+    // "/images/bg7.jpg",
+    "/images/bg14.jpg"
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
