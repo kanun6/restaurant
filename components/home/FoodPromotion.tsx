@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Image from "next/image";
 
 const promotions = [
   "/images/promo1.jpg",
@@ -30,7 +31,7 @@ const FoodPromotion = () => {
       >
         {promotions.map((image, index) => (
           <SwiperSlide key={index}>
-            <img
+            <Image
               src={image}
               alt={`Promotion ${index + 1}`}
               className="w-full h-64 object-cover rounded-lg"

@@ -7,25 +7,24 @@ import { useDebouncedCallback } from "use-debounce";
 const Search = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [search, setSearch] = useState(
-    searchParams.get("search")?.toString() || ""
-  );
+  const [search, setSearch] = useState("");
 
+  // ฟังการเปลี่ยนแปลงของ searchParams
+  useEffect(() => {
+    const currentSearch = searchParams.get("search") || "";
+    setSearch(currentSearch);
+  }, [searchParams]);
+
+  // ฟังก์ชันสำหรับจัดการการค้นหา
   const handleSearch = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set("search", value);
+    if (value.trim()) {
+      params.set("search", encodeURIComponent(value));
     } else {
       params.delete("search");
     }
     router.replace(`/?${params.toString()}`);
   }, 250);
-
-  useEffect(() => {
-    if (!searchParams.get("search")) {
-      setSearch("");
-    }
-  }, [searchParams.get("search")]);
 
   return (
     <Input
@@ -33,8 +32,9 @@ const Search = () => {
       placeholder="Search Food..."
       className="max-w-xs"
       onChange={(e) => {
-        setSearch(e.target.value);
-        handleSearch(e.target.value);
+        const value = e.target.value;
+        setSearch(value);
+        handleSearch(value);
       }}
       value={search}
     />

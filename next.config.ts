@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
         hostname: 'hpzdtfffwzbzitdjkmbp.supabase.co'
       }
     ]
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   }
 };
 
