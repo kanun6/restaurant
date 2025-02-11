@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { FoodCardProps } from "@/utils/types";
 import FavoriteToggleButton from "./FavoriteToggleButton";
+import Link from "next/link";
+
 
 const FoodCard = ({ food }: { food: FoodCardProps }) => {
   const { name,id, image, price, description } = food;
@@ -8,11 +10,12 @@ const FoodCard = ({ food }: { food: FoodCardProps }) => {
   return (
 
     <article className="group relative ">
+      <Link href={`/food/detail/${id}`}>
       {/* ส่วนของรูปภาพ */}
       <div className="relative h-[300px] rounded-mb mb-2 ">
         <Image
           src={image}
-          alt={name}
+          alt={name}y
           layout="fill"                                          
           className="objectFit-cover rounded-mb group-hover:scale-105 transition-transform duration-300"
         />
@@ -36,7 +39,7 @@ const FoodCard = ({ food }: { food: FoodCardProps }) => {
         <FavoriteToggleButton foodId={id}/>
       </div>
 
-
+      </Link>
     </article>
   );
 };

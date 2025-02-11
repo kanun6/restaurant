@@ -2,8 +2,8 @@ import { fetchFoods } from "@/actions/actions"
 import FoodList from "./FoodList"
 import { FoodCardProps } from "@/utils/types"
 
-const FoodConntainer = async () => {
-  const foods:FoodCardProps[] = await fetchFoods()
+const FoodConntainer = async ({search}:{search?:string}) => {
+  const foods:FoodCardProps[] = await fetchFoods({search})
   console.log(foods)
 
 
