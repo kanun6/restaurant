@@ -1,17 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  experimental:{
-    serverActions:{
+  experimental: {
+    serverActions: {
       bodySizeLimit: '5mb'
-    }
+    },
   },
-  images:{
-    remotePatterns:[
+   
+  images: {
+    remotePatterns: [
       {
-        protocol:'https',
-        hostname:'hpzdtfffwzbzitdjkmbp.supabase.co'
+        protocol: 'https',
+        hostname: 'hpzdtfffwzbzitdjkmbp.supabase.co'
       }
     ]
   }

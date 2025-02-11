@@ -35,11 +35,13 @@ const FoodCard = ({ food }: { food: FoodCardProps }) => {
         {description.substring(0,40)}
       </p>
 
+      </Link>
+
       <div className="absolute top-2 right-2">
         <FavoriteToggleButton foodId={id}/>
       </div>
 
-      </Link>
+      
     </article>
   );
 };

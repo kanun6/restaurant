@@ -7,7 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const Breadcrumb = ({name}:{name:string}) => {
+const Breadcrums = ({name}:{name:string}) => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
