@@ -7,7 +7,7 @@ import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
 const FoodDetail = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params;
+  const { id } = params;
   const food = await fetchFoodsdetail({ id });
   if (!food) redirect("/");
 
