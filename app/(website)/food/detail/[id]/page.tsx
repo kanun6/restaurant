@@ -6,7 +6,13 @@ import ImageContainer from "@/components/food/ImageContainer";
 import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
-const FoodDetail = async ({ params }: { params: { id: string } }) => {
+interface ParamsProps {
+  params: {
+    id: string;
+  };
+}
+
+const FoodDetail = async ({ params }: ParamsProps) => {
   const { id } = params;
   const food = await fetchFoodsdetail({ id });
   if (!food) redirect("/");
