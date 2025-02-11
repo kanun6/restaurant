@@ -34,6 +34,8 @@ const FoodPromotion = () => {
             <Image
               src={image}
               alt={`Promotion ${index + 1}`}
+              width={1200}
+              height={500}
               className="w-full h-64 object-cover rounded-lg"
             />
           </SwiperSlide>
