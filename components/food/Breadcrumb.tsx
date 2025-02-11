@@ -23,4 +23,4 @@ const Breadcrums = ({name}:{name:string}) => {
     </Breadcrumb>
   );
 };
-export default Breadcrumb;
+export default Breadcrums;
