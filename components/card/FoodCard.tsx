@@ -15,7 +15,7 @@ const FoodCard = ({ food }: { food: FoodCardProps }) => {
       <div className="relative h-[300px] rounded-mb mb-2 ">
         <Image
           src={image}
-          alt={name}y
+          alt={name}
           layout="fill"                                          
           className="objectFit-cover rounded-mb group-hover:scale-105 transition-transform duration-300"
         />
