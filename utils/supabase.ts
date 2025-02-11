@@ -20,7 +20,9 @@ export async function uploadFile(image: File) {
 
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(newName, image);
+    .upload(newName, image,{
+      cacheControl:'3600'
+    });
 
   if (error) {
     console.error("Upload Error:", error);

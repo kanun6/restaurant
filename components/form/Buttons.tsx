@@ -1,7 +1,8 @@
 "use client";
 import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
-import { LoaderCircle } from "lucide-react";
+import { Heart, LoaderCircle } from "lucide-react";
+import { SignInButton } from "@clerk/nextjs";
 
 type btnSize = "default" | "lg" | "sm";
 
@@ -12,7 +13,7 @@ type SubmitButtonProps = {
 };
 
 export const SubmitButton = ({ className, size, text }: SubmitButtonProps) => {
-  const { pending } = useFormStatus(); 
+  const { pending } = useFormStatus();
   return (
     <Button
       disabled={pending}
@@ -20,12 +21,24 @@ export const SubmitButton = ({ className, size, text }: SubmitButtonProps) => {
       size={size}
       className={`${className} capitalize`}
     >
-      {pending 
-      ? <>
-        <LoaderCircle className="animate-spin" />
-        <span>Please wait...</span>
+      {pending ? (
+        <>
+          <LoaderCircle className="animate-spin" />
+          <span>Please wait...</span>
         </>
-       :<p>{text}</p>}
+      ) : (
+        <p>{text}</p>
+      )}
     </Button>
+  );
+};
+
+export const SingInCardButton = () => {
+  return (
+    <SignInButton mode='modal'>
+      <Button size='icon' variant='outline'>
+        <Heart />
+      </Button>
+    </SignInButton>
   );
 };

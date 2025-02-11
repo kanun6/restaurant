@@ -10,6 +10,7 @@ const page = () => {
   <>
   {/* <FoodConntainer /> */}
   <FoodPromotion />
+  <h1 className="gap-4 mt-4">รายการอาหาร</h1>
   <FoodContainer />
 
   </>

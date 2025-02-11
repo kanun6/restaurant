@@ -1,21 +1,42 @@
 import Image from "next/image";
+import { FoodCardProps } from "@/utils/types";
+import FavoriteToggleButton from "./FavoriteToggleButton";
 
-const FoodCard = ({ food }) => {
-  console.log(food);
-
-  const { name, image } = food;
+const FoodCard = ({ food }: { food: FoodCardProps }) => {
+  const { name,id, image, price, description } = food;
 
   return (
-    <article className="relative shadow-lg rounded-lg overflow-hidden">
-      <div className="relative h-[300px]">
+
+    <article className="group relative ">
+      {/* ส่วนของรูปภาพ */}
+      <div className="relative h-[300px] rounded-mb mb-2 ">
         <Image
           src={image}
           alt={name}
-          width={200} 
-          height={250} 
-          className="object-cover"
+          layout="fill"                                          
+          className="objectFit-cover rounded-mb group-hover:scale-105 transition-transform duration-300"
         />
       </div>
+
+      {/* ส่วนของข้อความ */}
+      <div className=" flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-white">{name}</h3>
+      </div>
+      <div className="mt-1">
+        <span className="font-semibold text-sm">
+            {price} บาท
+        </span>
+      </div>
+
+      <p className="text-sm mt-1 text-muted-foreground ">
+        {description.substring(0,40)}
+      </p>
+
+      <div className="absolute top-2 right-2">
+        <FavoriteToggleButton foodId={id}/>
+      </div>
+
+
     </article>
   );
 };
