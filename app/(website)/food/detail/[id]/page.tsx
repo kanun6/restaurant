@@ -6,16 +6,14 @@ import ImageContainer from "@/components/food/ImageContainer";
 import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
-interface ParamsProps {
-  params: {
-    id: string;
-  };
-}
-
-const FoodDetail = async ({ params }: ParamsProps) => {
+// ไม่จำเป็นต้องสร้าง Interface เอง ถ้าใช้ Next.js App Router
+export const FoodDetailPage = async ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const food = await fetchFoodsdetail({ id });
-  if (!food) redirect("/");
+
+  if (!food) {
+    redirect("/");
+  }
 
   return (
     <section>
@@ -23,17 +21,14 @@ const FoodDetail = async ({ params }: ParamsProps) => {
       <header className="flex justify-between mt-4 items-center">
         <h1 className="text-4xl">{food.name}</h1>
         <div className="flex items-center gap-x-4">
-          <Price price={food.price}/>
+          <Price price={food.price} />
           <FavoriteToggleButton foodId={food.id} />
         </div>
       </header>
       <section className="flex mt-6 gap-6 items-stretch">
-        {/* รูปภาพอยู่ฝั่งซ้าย */}
         <div className="w-1/2">
           <ImageContainer mainImage={food.image} name={food.name} />
         </div>
-
-        {/* Description อยู่ฝั่งขวา */}
         <div className="w-1/2 p-4 flex items-center h-full">
           <Description description={food.description} />
         </div>
@@ -41,4 +36,5 @@ const FoodDetail = async ({ params }: ParamsProps) => {
     </section>
   );
 };
-export default FoodDetail;
+
+export default FoodDetailPage;
