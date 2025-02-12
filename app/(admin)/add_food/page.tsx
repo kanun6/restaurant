@@ -30,7 +30,11 @@ const createPage = async () => {
             />
           </div>
           <ImageInput />
-          <TextAreainput name="description"/>
+          <TextAreainput
+            name="description"
+            labelText="Description"
+            defaultValue=""
+          />
 
           <SubmitButton text="Add Food" size="lg" className="" />
         </FormContainer>
