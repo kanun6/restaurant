@@ -1,17 +1,17 @@
 
 
-import AddFooDpage from "@/components/Dashboard/AddFood";
-import Sidebar from "@/components/Dashboard/Sidebar";
+// import AddFooDpage from "@/components/Dashboard/AddFood";
+// import { AppSidebar } from "@/components/Dashboard/Sidebar";
+// import { AppSidebarMenu } from "@/components/Dashboard/SidebarMenu";
+// import Sidebar from "@/components/Dashboard/Sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import Analytics from "./analytics";
 
 export default function AdminDashboard() {
   return (
-    <div className="flex min-h-screen bg-sky-100">
-      <Sidebar />
-      <main className="flex-1 p-6 ml-64">
-        <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="">
+      <h1>Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader><CardTitle>โต๊ะที่ใช้งาน</CardTitle></CardHeader>
             <CardContent><p className="text-3xl font-bold">12</p></CardContent>
@@ -25,11 +25,7 @@ export default function AdminDashboard() {
             <CardContent><p className="text-3xl font-bold">฿4,500</p></CardContent>
           </Card>
         </div>
-        <div>
-        <AddFooDpage />
-        {/* <Analytics /> */}
-        </div>
-      </main>  
     </div>
   );
 }
+
