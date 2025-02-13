@@ -7,9 +7,9 @@ import ImageInput from "@/components/form/ImageInput";
 // import { currentUser } from "@clerk/nextjs/server";
 // import { redirect } from "next/navigation";
 
-const createPage = async () => {
+const AddFooDpage = async () => {
   return (
-    <section>
+    <section className="bg-white mt-8">
       <h1 className="text-2xl font-semibold mb-8 capitalize">Add Food</h1>
       <div className="border p-8 rounded-md">
         <FormContainer action={AddFoodAction}>
@@ -42,4 +42,4 @@ const createPage = async () => {
     </section>
   );
 };
-export default createPage;
+export default AddFooDpage;

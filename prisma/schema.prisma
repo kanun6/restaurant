@@ -33,7 +33,7 @@ model Food {
   updatedAt   DateTime   @updatedAt
 
   profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String     // อ้างอิงไปที่ Profile.id
+  profileId   String    // อ้างอิงไปที่ Profile.id
 
   favorites   Favorite[]
 }

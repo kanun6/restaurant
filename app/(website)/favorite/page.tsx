@@ -7,7 +7,11 @@ const FavoritePage = async () => {
 
 
 
-  return <FoodList foods={Favorites}/>
+  return <div>
+    <h1 className="text-4xl">รายการอาหารที่ชอบ</h1>
+    <FoodList foods={Favorites}/>
+
+    </div>
 }
 
 export default FavoritePage

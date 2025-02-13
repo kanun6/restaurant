@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
+
 // import { date } from "zod";
 // import { profile } from "console";
 
@@ -91,12 +92,12 @@ export const AddFoodAction = async (
         profileId: user.id,
       },
     });
-    // return { message: "Add Food Success!!!" };
+    return { message: "Add Food Success!!!" };
   } catch (error) {
     // console.log(error);
     return renderError(error);
   }
-  redirect("/");
+  // redirect("/");
 };
 
 export const fetchFoods = async ({ search = "" }: { search?: string }) => {
@@ -187,4 +188,27 @@ export const fetchFoodsdetail = async ({id}:{id:string})=>{
     }
   })
 
-}
+};
+
+
+// export const deleteFoodAction = async (foodId: string) => {
+//   try {
+//     const user = await currentUser();
+//     if (!user) throw new Error("You must be logged in.");
+//     if (!user.role || !user.role.includes('marketing_admin')) {
+//       throw new Error("You do not have permission.");
+//     }
+
+//     // ลบอาหารจาก Prisma
+//     await prisma.food.delete({
+//       where: { id: foodId },
+//     });
+
+//     return { success: true, message: "ลบอาหารสำเร็จ!" };
+//   } catch (error) {
+//     return {
+//       success: false,
+//       message: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการลบอาหาร",
+//     };
+//   }
+// };

@@ -5,7 +5,7 @@ const url = process.env.SUPABASE_URL as string;
 const key = process.env.SUPABASE_KEY as string;
 
 // Create Supabase client
-const supabase = createClient(url, key);
+export const supabase = createClient(url, key);
 
 // Upload file using standard upload
 export async function uploadFile(image: File) {
@@ -18,16 +18,18 @@ export async function uploadFile(image: File) {
 
   const newName = `food-${timeStamp}-${sanitizedFileName}`;
 
-  const { data, error } = await supabase.storage
+  const { data, } = await supabase.storage
     .from(bucket)
     .upload(newName, image,{
       cacheControl:'3600'
     });
 
-  if (error) {
-    console.error("Upload Error:", error);
-    throw new Error(`Image upload failed: ${error.message}`);
-  }
+    if (!data) throw new Error("Image upload failed!!!");
+
+  // if (error) {
+  //   console.error("Upload Error:", error);
+  //   throw new Error(`Image upload failed: ${error.message}`);
+  // }
   // const { data } = supabase.storage.from('bucket').getPublicUrl('filePath.jpg')
 
   // console.log(data.publicUrl)
