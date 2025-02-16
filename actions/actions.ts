@@ -100,6 +100,25 @@ export const AddFoodAction = async (
   // redirect("/");
 };
 
+export const DeleteFoodAction = async (foodId: string): Promise<{ message: string }> => {
+  try {
+    // ลบข้อมูลจาก Prisma
+    await prisma.food.delete({
+      where: { id: foodId },
+    });
+
+    // ✅ ถ้าใช้ Supabase ให้ใช้โค้ดนี้แทน
+    // const { error } = await supabase.from("foods").delete().eq("id", foodId);
+    // if (error) throw error;
+
+    return { message: "Delete Food Success!!!" };
+  } catch (error) {
+    console.error("Error deleting food:", error);
+    return renderError(error);
+  }
+};
+
+
 export const fetchFoods = async ({ search = "" }: { search?: string }) => {
   const foods = await prisma.food.findMany({
     where: {

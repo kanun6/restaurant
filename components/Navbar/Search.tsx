@@ -31,7 +31,7 @@ const Search = () => {
   return (
     <Input
       type="text"
-      placeholder="Seach Camping..."
+      placeholder="Seach Food..."
       className="max-w-xs"
       onChange={(e) => {
         setSearch(e.target.value);

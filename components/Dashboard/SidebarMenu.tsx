@@ -19,18 +19,18 @@ const items = [
     icon: LayoutDashboard,
   },
   {
-    title: "Add Menu",
+    title: "Menu",
     url: "/Dashboard/add_food",
     icon: Utensils,
   },
   {
-    title: "Add Table",
+    title: "Table",
     url: "/Dashboard/add_table",
     icon: Armchair,
   },
   {
-    title: "สถิติการใช้งาน",
-    url: "#",
+    title: "Usage statistics",
+    url: "/Dashboard/Usage_statistics",
     icon: BarChart,
   },
   {

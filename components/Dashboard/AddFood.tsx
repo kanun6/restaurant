@@ -10,7 +10,7 @@ import ImageInput from "@/components/form/ImageInput";
 const AddFooDpage = async () => {
   return (
     <section className="bg-white mt-8">
-      <h1 className="text-2xl font-semibold mb-8 capitalize">Add Food</h1>
+      <h1 className="text-2xl font-semibold mb-8 capitalize">Add Menu</h1>
       <div className="border p-8 rounded-md">
         <FormContainer action={AddFoodAction}>
           <div className="grid md:grid-cols-2 gap-4 mt-4">
@@ -36,7 +36,7 @@ const AddFooDpage = async () => {
             defaultValue=""
           />
 
-          <SubmitButton text="Add Food" size="lg" className="" />
+          <SubmitButton text="Add Menu" size="lg" className="" />
         </FormContainer>
       </div>
     </section>
