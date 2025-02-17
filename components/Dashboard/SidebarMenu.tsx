@@ -1,4 +1,4 @@
-import { LayoutDashboard, Utensils, Armchair , BarChart, House  } from "lucide-react";
+import { LayoutDashboard, Utensils, Armchair, House  } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,11 +27,6 @@ const items = [
     title: "Table",
     url: "/Dashboard/add_table",
     icon: Armchair,
-  },
-  {
-    title: "Usage statistics",
-    url: "/Dashboard/Usage_statistics",
-    icon: BarChart,
   },
   {
     title: "Home",

@@ -1,31 +1,97 @@
+"use client";
+import { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 
+Chart.register(...registerables);
 
-// import AddFooDpage from "@/components/Dashboard/AddFood";
-// import { AppSidebar } from "@/components/Dashboard/Sidebar";
-// import { AppSidebarMenu } from "@/components/Dashboard/SidebarMenu";
-// import Sidebar from "@/components/Dashboard/Sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import Analytics from "./analytics";
+interface ProfileStats {
+  totalProfiles: number;
+  newProfilesLast7Days: number;
+  activeUsersLast7Days: number;
+}
 
-export default function AdminDashboard() {
+export default function Dashboard() {
+  const [profileStats, setProfileStats] = useState<ProfileStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("/api/get-profile-stats");
+        if (!res.ok) throw new Error("Failed to fetch data");
+
+        const data: ProfileStats = await res.json();
+        console.log("Profile Stats:", data);
+        setProfileStats(data);
+      } catch (err) {
+        console.error("Fetch Error:", err);
+        setError("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (error) {
+    return <p style={{ color: "red" }}>{error}</p>;
+  }
+
+  if (!profileStats) {
+    return <p>Loading...</p>;
+  }
+
+  const chartData = {
+    labels: ["ผู้ใช้ทั้งหมด", "สมัครใหม่ (7 วัน)", "เข้าใช้งาน (7 วัน)"],
+    datasets: [
+      {
+        label: "จำนวนผู้ใช้",
+        data: [
+          profileStats.totalProfiles,
+          profileStats.newProfilesLast7Days,
+          profileStats.activeUsersLast7Days,
+        ],
+        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    <div className="">
-      <h1>Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader><CardTitle>โต๊ะที่ใช้งาน</CardTitle></CardHeader>
-            <CardContent><p className="text-3xl font-bold">12</p></CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>ออเดอร์ที่รอเสิร์ฟ</CardTitle></CardHeader>
-            <CardContent><p className="text-3xl font-bold">8</p></CardContent>
-          </Card>
-          <Card>
-            <CardHeader><CardTitle>รายได้วันนี้</CardTitle></CardHeader>
-            <CardContent><p className="text-3xl font-bold">฿4,500</p></CardContent>
-          </Card>
+    <div style={{ padding: "20px" }}>
+      <h1>📊 สถิติผู้ใช้</h1>
+
+      {/* แสดงสถิติเป็นตัวเลข */}
+      <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
+        <div style={{ padding: "20px", background: "#f3f4f6", borderRadius: "8px" }}>
+          <h2>👥 ผู้ใช้ทั้งหมด</h2>
+          <p style={{ fontSize: "24px", fontWeight: "bold" }}>{profileStats.totalProfiles}</p>
         </div>
+        <div style={{ padding: "20px", background: "#e0f7fa", borderRadius: "8px" }}>
+          <h2>🆕 สมัครใหม่ใน 7 วัน</h2>
+          <p style={{ fontSize: "24px", fontWeight: "bold" }}>{profileStats.newProfilesLast7Days}</p>
+        </div>
+        <div style={{ padding: "20px", background: "#d1c4e9", borderRadius: "8px" }}>
+          <h2>📅 เข้าใช้งานใน 7 วัน</h2>
+          <p style={{ fontSize: "24px", fontWeight: "bold" }}>{profileStats.activeUsersLast7Days}</p>
+        </div>
+      </div>
+
+      {/* กราฟแท่ง */}
+      <h2>📈 กราฟแสดงจำนวนผู้ใช้</h2>
+      <div style={{ height: "300px", width: "80%" }}>
+        <Bar
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: true, position: "top" },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }
-

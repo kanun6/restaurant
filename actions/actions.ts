@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
+import { PrismaClient } from "@prisma/client";
 
 // import { date } from "zod";
 // import { profile } from "console";
@@ -59,7 +60,7 @@ export const createProfileAction = async (
       },
     });
 
-    return { message: "Create Profile Success!!!" };
+    // return { message: "Create Profile Success!!!" };
   } catch (error) {
     // console.log(error);
     return renderError(error);
@@ -203,3 +204,63 @@ export const fetchFoodsdetail = async ({ id }: { id: string }) => {
   });
 };
 
+
+
+const db = new PrismaClient(); // ✅ ใช้ `db` แทน `prisma` เพื่อป้องกันความซ้ำซ้อน
+
+export async function logUserActivity(profileId: string) {
+  try {
+    console.log("📌 Received profileId:", profileId);
+
+    if (!profileId) {
+      console.log("❌ Missing profileId");
+      return { error: "Missing profileId" };
+    }
+
+    // ✅ ตรวจสอบว่า profileId มีอยู่ใน Profile หรือไม่
+    const profile = await db.profile.findUnique({
+      where: { id: profileId },
+    });
+
+    if (!profile) {
+      console.log("❌ Profile not found:", profileId);
+      return { error: "Profile not found" };
+    }
+
+    console.log("✅ Profile exists, proceeding to update UserActivity");
+
+    // ✅ ตรวจสอบว่ามี UserActivity หรือยัง
+    const existingActivity = await db.userActivity.findFirst({
+      where: { profileId },
+    });
+
+    if (existingActivity) {
+      console.log("🔄 Updating existing activity...");
+      await db.userActivity.update({
+        where: { id: existingActivity.id },
+        data: { updatedAt: new Date() },
+      });
+    } else {
+      console.log("🆕 Creating new UserActivity record...");
+      await db.userActivity.create({
+        data: {
+          profileId,
+          loginAt: new Date(),
+        },
+      });
+    }
+
+    console.log("✅ User activity logged successfully");
+    return { message: "User activity logged successfully" };
+
+  } catch (error) {
+    console.error("❌ Error logging user activity:", error);
+
+    let errorMessage = "Internal Server Error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return { error: errorMessage };
+  }
+}

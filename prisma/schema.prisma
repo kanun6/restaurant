@@ -21,6 +21,7 @@ model Profile {
 
   foods        Food[]    // เปลี่ยนชื่อจาก landmarks เป็น foods
   favorites    Favorite[]
+  activities   UserActivity[]
 }
 
 model Food {
@@ -49,4 +50,15 @@ model Favorite {
   food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   foodId    String   // อ้างอิงไปที่ Food.id
 }
+
+model UserActivity {
+  id        String   @id @default(uuid())
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String   
+  loginAt   DateTime @default(now())  
+  updatedAt DateTime @updatedAt  // ใช้สำหรับติดตามสถานะออนไลน์
+
+  @@index([profileId])
+}
+
 
