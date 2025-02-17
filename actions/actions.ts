@@ -100,24 +100,19 @@ export const AddFoodAction = async (
   // redirect("/");
 };
 
-export const DeleteFoodAction = async (foodId: string): Promise<{ message: string }> => {
+export const DeleteFoodAction = async (
+  foodId: string
+): Promise<{ message: string }> => {
   try {
-    // ลบข้อมูลจาก Prisma
     await prisma.food.delete({
       where: { id: foodId },
     });
-
-    // ✅ ถ้าใช้ Supabase ให้ใช้โค้ดนี้แทน
-    // const { error } = await supabase.from("foods").delete().eq("id", foodId);
-    // if (error) throw error;
-
     return { message: "Delete Food Success!!!" };
   } catch (error) {
     console.error("Error deleting food:", error);
     return renderError(error);
   }
 };
-
 
 export const fetchFoods = async ({ search = "" }: { search?: string }) => {
   const foods = await prisma.food.findMany({
@@ -169,7 +164,7 @@ export const toggleFavoriteAction = async (prevState: {
     }
     revalidatePath(pathname);
     return {
-      message: favoriteId ? "Remove Favorite Success" : "Add  Favorite Success",
+      message: favoriteId ? "Remove Favorite Success" : "Add Favorite Success",
     };
   } catch (error) {
     return renderError(error);
@@ -197,37 +192,14 @@ export const fetchFavorite = async () => {
   return favorites.map((favorite) => favorite.food);
 };
 
-export const fetchFoodsdetail = async ({id}:{id:string})=>{
+export const fetchFoodsdetail = async ({ id }: { id: string }) => {
   return prisma.food.findFirst({
-    where:{
-      id
+    where: {
+      id,
     },
-    include:{
-      profile:true
-    }
-  })
-
+    include: {
+      profile: true,
+    },
+  });
 };
 
-
-// export const deleteFoodAction = async (foodId: string) => {
-//   try {
-//     const user = await currentUser();
-//     if (!user) throw new Error("You must be logged in.");
-//     if (!user.role || !user.role.includes('marketing_admin')) {
-//       throw new Error("You do not have permission.");
-//     }
-
-//     // ลบอาหารจาก Prisma
-//     await prisma.food.delete({
-//       where: { id: foodId },
-//     });
-
-//     return { success: true, message: "ลบอาหารสำเร็จ!" };
-//   } catch (error) {
-//     return {
-//       success: false,
-//       message: error instanceof Error ? error.message : "เกิดข้อผิดพลาดในการลบอาหาร",
-//     };
-//   }
-// };

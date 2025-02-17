@@ -49,3 +49,4 @@ model Favorite {
   food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   foodId    String   // อ้างอิงไปที่ Food.id
 }
+
