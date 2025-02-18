@@ -9,18 +9,17 @@ datasource db {
 }
 
 model Profile {
-  id           String   @id @default(uuid())  // ใช้ id เป็น primary key
-  clerkId      String   @unique               // คงไว้สำหรับ Clerk
+  id           String         @id @default(uuid())
+  clerkId      String         @unique
   firstName    String
   lastName     String
-  username     String   @unique
-  email        String   @unique
+  username     String         @unique
+  email        String         @unique
   profileImage String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  foods        Food[]    // เปลี่ยนชื่อจาก landmarks เป็น foods
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   favorites    Favorite[]
+  foods        Food[]
   activities   UserActivity[]
 }
 
@@ -32,33 +31,35 @@ model Food {
   price       Int
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-
-  profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId   String    // อ้างอิงไปที่ Profile.id
-
+  profileId   String
   favorites   Favorite[]
+  profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model Favorite {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String   // อ้างอิงไปที่ Profile.id
-
+  profileId String
+  foodId    String
   food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
-  foodId    String   // อ้างอิงไปที่ Food.id
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 }
 
 model UserActivity {
   id        String   @id @default(uuid())
+  profileId String
+  loginAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId String   
-  loginAt   DateTime @default(now())  
-  updatedAt DateTime @updatedAt  // ใช้สำหรับติดตามสถานะออนไลน์
 
   @@index([profileId])
 }
 
-
+model Table {
+  id              String   @id @default(uuid())
+  tableNumber     String   @unique
+  seatingCapacity Int
+  availableDate   DateTime
+  createdAt       DateTime @default(now())
+}

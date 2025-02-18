@@ -11,7 +11,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
 import { revalidatePath } from "next/cache";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 
 // import { date } from "zod";
 // import { profile } from "console";
@@ -74,32 +74,47 @@ export const AddFoodAction = async (
 ): Promise<{ message: string }> => {
   try {
     const user = await getAuthUser();
+
+    // ✅ ดึง `profileId` จากฐานข้อมูลโดยใช้ `clerkId`
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id }, // ใช้ clerkId เชื่อมโยงกับ profileId
+      select: { id: true }
+    });
+
+    if (!profile) {
+      throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ โปรดสร้างโปรไฟล์ก่อนเพิ่มอาหาร");
+    }
+
+    // ✅ ดึงข้อมูลจากฟอร์ม
     const rawData = Object.fromEntries(formData);
     const file = formData.get("image") as File;
 
     const validatedFile = ValidateEithZode(imageSchema, { image: file });
     const validateField = ValidateEithZode(foodSchema, rawData);
-    // console.log("validated", validatedFile);
-    // console.log("validated", validateField);
 
+    // ✅ อัปโหลดรูปไปที่ Supabase
     const fullPath = await uploadFile(validatedFile.image);
-    console.log(fullPath);
+    console.log("🟢 Uploaded image path:", fullPath);
+
+    // ✅ เพิ่มอาหารลงฐานข้อมูลโดยใช้ `profile.id`
     await prisma.food.create({
       data: {
         name: validateField.name,
         price: validateField.price,
         description: validateField.description,
         image: fullPath,
-        profileId: user.id,
+        profileId: profile.id, // ✅ ใช้ `profile.id` ที่ดึงมาแทน user.id
       },
     });
-    return { message: "Add Food Success!!!" };
+
+    // return { message: "เพิ่มอาหารสำเร็จ!" };
   } catch (error) {
-    // console.log(error);
+    console.error("🔴 Error in AddFoodAction:", error);
     return renderError(error);
   }
-  // redirect("/");
+  redirect('/Dashboard/add_food')
 };
+
 
 export const DeleteFoodAction = async (
   foodId: string
@@ -129,69 +144,114 @@ export const fetchFoods = async ({ search = "" }: { search?: string }) => {
 
 export const fetchFavoriteId = async ({ foodId }: { foodId: string }) => {
   const user = await getAuthUser();
+
+  // ✅ ดึง `profileId` จากฐานข้อมูลโดยใช้ `clerkId`
+  const profile = await prisma.profile.findUnique({
+    where: { clerkId: user.id },
+    select: { id: true },
+  });
+
+  if (!profile) {
+    throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ");
+  }
+
   const favorite = await prisma.favorite.findFirst({
     where: {
       foodId: foodId,
-      profileId: user.id,
+      profileId: profile.id, // ✅ ใช้ `profile.id` จากฐานข้อมูล
     },
     select: {
       id: true,
     },
   });
+
   return favorite?.id || null;
 };
+
 
 export const toggleFavoriteAction = async (prevState: {
   favoriteId: string | null;
   foodId: string;
   pathname: string;
 }) => {
-  const { favoriteId, foodId, pathname } = prevState;
-  const user = await getAuthUser();
   try {
-    if (favoriteId) {
+    const user = await getAuthUser();
+
+    // ✅ ดึง `profileId` จากฐานข้อมูลโดยใช้ `clerkId`
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    });
+
+    if (!profile) {
+      throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ โปรดสร้างโปรไฟล์ก่อน");
+    }
+
+    if (prevState.favoriteId) {
       await prisma.favorite.delete({
         where: {
-          id: favoriteId,
+          id: prevState.favoriteId,
         },
       });
     } else {
       await prisma.favorite.create({
         data: {
-          foodId: foodId,
-          profileId: user.id,
+          foodId: prevState.foodId,
+          profileId: profile.id, // ✅ ใช้ `profile.id` จากฐานข้อมูลแทน Clerk ID
         },
       });
     }
-    revalidatePath(pathname);
+
+    revalidatePath(prevState.pathname);
     return {
-      message: favoriteId ? "Remove Favorite Success" : "Add Favorite Success",
+      message: prevState.favoriteId ? "Remove Favorite Success" : "Add Favorite Success",
     };
   } catch (error) {
+    console.error("🔴 Error in toggleFavoriteAction:", error);
     return renderError(error);
   }
 };
 
+
 export const fetchFavorite = async () => {
-  const user = await getAuthUser();
-  const favorites = await prisma.favorite.findMany({
-    where: {
-      profileId: user.id,
-    },
-    select: {
-      food: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          image: true,
-          price: true,
+  try {
+    const user = await getAuthUser();
+
+    // ✅ ดึง `profileId` จากฐานข้อมูลโดยใช้ `clerkId`
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    });
+
+    if (!profile) {
+      throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ โปรดสร้างโปรไฟล์ก่อน");
+    }
+
+    // ✅ ดึงรายการ Favorite โดยใช้ `profile.id`
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        profileId: profile.id, // ✅ ใช้ `profile.id` จากฐานข้อมูลแทน `user.id`
+      },
+      select: {
+        food: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            image: true,
+            price: true,
+          },
         },
       },
-    },
-  });
-  return favorites.map((favorite) => favorite.food);
+    });
+
+    return favorites.map((favorite) => favorite.food);
+  } catch (error) {
+    console.error("🔴 Error in fetchFavorite:", error);
+    return [];
+  }
 };
+
 
 export const fetchFoodsdetail = async ({ id }: { id: string }) => {
   return prisma.food.findFirst({
@@ -204,63 +264,53 @@ export const fetchFoodsdetail = async ({ id }: { id: string }) => {
   });
 };
 
-
-
-const db = new PrismaClient(); // ✅ ใช้ `db` แทน `prisma` เพื่อป้องกันความซ้ำซ้อน
-
-export async function logUserActivity(profileId: string) {
+// ฟังก์ชันเพิ่มโต๊ะ
+export async function addTable(tableNumber: string, seatingCapacity: number, availableDate: string) {
   try {
-    console.log("📌 Received profileId:", profileId);
+      const parsedDate = new Date(availableDate);
 
-    if (!profileId) {
-      console.log("❌ Missing profileId");
-      return { error: "Missing profileId" };
-    }
+      if (!tableNumber || !seatingCapacity || isNaN(parsedDate.getTime())) {
+          throw new Error('กรุณากรอกข้อมูลให้ครบถ้วน');
+      }
 
-    // ✅ ตรวจสอบว่า profileId มีอยู่ใน Profile หรือไม่
-    const profile = await db.profile.findUnique({
-      where: { id: profileId },
-    });
-
-    if (!profile) {
-      console.log("❌ Profile not found:", profileId);
-      return { error: "Profile not found" };
-    }
-
-    console.log("✅ Profile exists, proceeding to update UserActivity");
-
-    // ✅ ตรวจสอบว่ามี UserActivity หรือยัง
-    const existingActivity = await db.userActivity.findFirst({
-      where: { profileId },
-    });
-
-    if (existingActivity) {
-      console.log("🔄 Updating existing activity...");
-      await db.userActivity.update({
-        where: { id: existingActivity.id },
-        data: { updatedAt: new Date() },
+      const newTable = await prisma.table.create({
+          data: { tableNumber, seatingCapacity, availableDate: parsedDate }
       });
-    } else {
-      console.log("🆕 Creating new UserActivity record...");
-      await db.userActivity.create({
-        data: {
-          profileId,
-          loginAt: new Date(),
-        },
-      });
+
+      return { success: true, data: newTable };
+  } catch (error: unknown) {
+      if (error instanceof Error) {
+          return { success: false, error: error.message };
+      }
+      return { success: false, error: 'เกิดข้อผิดพลาด ไม่สามารถเพิ่มโต๊ะได้' };
+  }
+}
+
+// ฟังก์ชันลบโต๊ะ
+export async function deleteTable(tableId: string) {
+    try {
+        const deletedTable = await prisma.table.delete({
+            where: { id: tableId }
+        });
+
+        return { success: true, data: deletedTable };
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return { success: false, error: error.message };
+        }
+        return { success: false, error: 'An unknown error occurred' };
     }
+}
 
-    console.log("✅ User activity logged successfully");
-    return { message: "User activity logged successfully" };
-
-  } catch (error) {
-    console.error("❌ Error logging user activity:", error);
-
-    let errorMessage = "Internal Server Error";
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-
-    return { error: errorMessage };
+// ✅ ดึงรายการโต๊ะทั้งหมด
+export async function getTables() {
+  try {
+      const tables = await prisma.table.findMany();
+      return { success: true, data: tables };
+  } catch (error: unknown) {
+      if (error instanceof Error) {
+          return { success: false, error: error.message };
+      }
+      return { success: false, error: 'An unknown error occurred' };
   }
 }
