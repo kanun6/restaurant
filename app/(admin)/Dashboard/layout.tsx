@@ -4,9 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="bg-black">
-        <AppSidebar />
-      </div>
+      <AppSidebar />
       <main className="">
         <SidebarTrigger />
         {children}
