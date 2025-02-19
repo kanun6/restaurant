@@ -1,6 +1,5 @@
 "use client";
 
-// import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -19,7 +18,7 @@ const promotions = [
 
 const FoodPromotion = () => {
   return (
-    <div className="w-full max-w-3xl mx-auto p-4">
+    <div className="w-full max-w-6xl mx-auto p-4"> 
       <Swiper
         modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={10}
@@ -30,13 +29,13 @@ const FoodPromotion = () => {
         className="rounded-lg shadow-lg"
       >
         {promotions.map((image, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} className="flex justify-center">
             <Image
               src={image}
               alt={`Promotion ${index + 1}`}
               width={1200}
-              height={500}
-              className="w-full h-64 object-cover rounded-lg"
+              height={400} // ✅ ลดความสูงให้สมดุลกับพื้นที่
+              className="w-full h-auto object-cover rounded-lg"
             />
           </SwiperSlide>
         ))}
