@@ -3,6 +3,7 @@ import FavoriteToggleButton from "@/components/card/FavoriteToggleButton";
 import Breadcrumb from "@/components/food/Breadcrumb";
 import Description from "@/components/food/Description";
 import ImageContainer from "@/components/food/ImageContainer";
+import OrderButton from "@/components/food/OrderButton";
 import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
@@ -31,6 +32,9 @@ export const FoodDetailPage = async ({ params }: { params: Promise<{ id: string 
         </div>
         <div className="w-1/2 p-4 flex items-center h-full">
           <Description description={food.description} />
+        </div>
+        <div>
+          <OrderButton foodId={food.id} />
         </div>
       </section>
     </section>

@@ -23,6 +23,7 @@ const getAuthUser = async () => {
   }
   if (!user.privateMetadata.hasProfile) redirect("/profile/create");
   return user;
+  
 };
 
 const renderError = (error: unknown): { message: string } => {
@@ -405,5 +406,323 @@ export async function logUserActivity() {
   } catch (error) {
     console.error("❌ Error logging user activity:", error);
     return { error: "Internal Server Error" };
+  }
+}
+
+export async function reserveTable(tableId: string) {
+  try {
+    const user = await getAuthUser();
+    if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้ โปรดเข้าสู่ระบบ");
+
+    console.log("🟢 User ID:", user.id); // Clerk ID
+    console.log("🟢 Table ID:", tableId);
+
+    // ✅ ดึง `profileId` จากฐานข้อมูล
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id }, // ใช้ Clerk ID เพื่อหา Profile ID
+      select: { id: true }
+    });
+
+    if (!profile) throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ โปรดสร้างโปรไฟล์ก่อน");
+
+    console.log("🟢 Profile ID:", profile.id); // ✅ แสดง `profileId`
+
+    // ✅ ตรวจสอบว่าโต๊ะมีอยู่จริง
+    const existingTable = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { reservedById: true }
+    });
+
+    console.log("🔵 ข้อมูลโต๊ะก่อนอัปเดต:", existingTable);
+
+    if (!existingTable) throw new Error("ไม่พบโต๊ะนี้");
+    if (existingTable.reservedById) throw new Error("โต๊ะนี้ถูกจองแล้ว");
+
+    // ✅ ใช้ `profile.id` ในการอัปเดต
+    const updatedTable = await prisma.table.update({
+      where: { id: tableId },
+      data: { reservedById: profile.id, reservedAt: new Date() }
+    });
+
+    console.log("✅ จองโต๊ะสำเร็จ:", updatedTable);
+    return { success: true, data: updatedTable };
+  } catch (error) {
+    console.error("🔴 Error reserving table:", error);
+    return { success: false, error: error instanceof Error ? error.message : "ไม่สามารถจองโต๊ะได้" };
+  }
+}
+
+
+// ✅ ฟังก์ชันยกเลิกการจอง
+export async function cancelReservation(tableId: string) {
+  try {
+    const user = await getAuthUser();
+
+    // ✅ ดึง `profileId` จากฐานข้อมูล
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id }, // ใช้ Clerk ID เพื่อหา Profile ID
+      select: { id: true }
+    });
+
+    if (!profile) throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ โปรดเข้าสู่ระบบ");
+
+    console.log("🟢 Profile ID:", profile.id);
+
+    // ✅ ตรวจสอบว่า User เป็นเจ้าของการจองหรือไม่
+    const table = await prisma.table.findUnique({
+      where: { id: tableId },
+      select: { reservedById: true }
+    });
+
+    console.log("🔵 ข้อมูลโต๊ะก่อนยกเลิก:", table);
+
+    if (!table) throw new Error("ไม่พบโต๊ะนี้");
+    if (table.reservedById !== profile.id) throw new Error("คุณไม่ได้จองโต๊ะนี้");
+
+    // ✅ อัปเดตให้โต๊ะเป็นว่าง
+    const updatedTable = await prisma.table.update({
+      where: { id: tableId },
+      data: { reservedById: null, reservedAt: null }
+    });
+
+    console.log("✅ ยกเลิกการจองโต๊ะสำเร็จ:", updatedTable);
+    
+    revalidatePath("/user/tables"); // ✅ อัปเดตหน้า
+    return { success: true, data: updatedTable };
+  } catch (error) {
+    console.error("🔴 Error canceling reservation:", error);
+    return { success: false, error: error instanceof Error ? error.message : "ไม่สามารถยกเลิกการจองได้" };
+  }
+}
+
+export async function fetchReservedTables() {
+  try {
+    // ✅ ดึงโต๊ะที่ถูกจอง พร้อมกับชื่อ username และ email ของผู้จอง
+    const reservedTables = await prisma.table.findMany({
+      where: { reservedById: { not: null } }, // ✅ ค้นหาเฉพาะโต๊ะที่ถูกจอง
+      include: {
+        profile: { select: { username: true, email: true } } // ✅ ดึง username และ email
+      },
+      orderBy: { reservedAt: "desc" } // เรียงจากล่าสุด
+    });
+
+    return { success: true, data: reservedTables };
+  } catch (error) {
+    console.error("🔴 Error fetching reserved tables:", error);
+    return { success: false, error: "ไม่สามารถดึงข้อมูลโต๊ะที่ถูกจองได้" };
+  }
+}
+
+export async function fetchReservationsUser() {
+  try {
+    const user = await getAuthUser();
+    if (!user) throw new Error("กรุณาเข้าสู่ระบบ");
+
+    // ✅ ค้นหา Profile จาก Clerk ID
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    });
+
+    if (!profile) throw new Error("ไม่พบโปรไฟล์ของคุณ");
+
+    // ✅ ดึงโต๊ะที่ผู้ใช้จองไว้
+    const reservations = await prisma.table.findMany({
+      where: { reservedById: profile.id },
+      select: {
+        id: true,
+        tableNumber: true,
+        seatingCapacity: true,
+        reservedAt: true,
+      },
+      orderBy: { reservedAt: "desc" },
+    });
+
+    return { success: true, data: reservations };
+  } catch (error) {
+    console.error("🔴 Error fetching user reservations:", error);
+    return { success: false, error: "ไม่สามารถดึงข้อมูลการจองโต๊ะได้" };
+  }
+}
+
+
+export async function orderFood(foodId: string, quantity: number) {
+  try {
+    const user = await getAuthUser();
+    if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้ โปรดเข้าสู่ระบบ");
+
+    // ✅ ดึงโปรไฟล์ของผู้ใช้
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    });
+
+    if (!profile) {
+      throw new Error("ไม่พบโปรไฟล์ของคุณในระบบ");
+    }
+
+    // ✅ ดึงข้อมูลอาหารที่สั่ง
+    const food = await prisma.food.findUnique({
+      where: { id: foodId },
+      select: { price: true },
+    });
+
+    if (!food) {
+      throw new Error("ไม่พบอาหารที่เลือก");
+    }
+
+    const totalPrice = food.price * quantity;
+
+    // ✅ บันทึกคำสั่งซื้อ
+    const newOrder = await prisma.order.create({
+      data: {
+        userId: profile.id,
+        foodId,
+        quantity,
+        totalPrice,
+      },
+    });
+
+    return { success: true, data: newOrder };
+  } catch (error) {
+    console.error("🔴 Error ordering food:", error);
+    return { success: false, error: error instanceof Error ? error.message : "ไม่สามารถสั่งอาหารได้" };
+  }
+}
+
+
+
+export async function cancelOrder(orderId: string) {
+  try {
+    const user = await getAuthUser(); // ✅ ตรวจสอบว่าผู้ใช้ล็อกอินอยู่หรือไม่
+    if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้ โปรดเข้าสู่ระบบ");
+
+    // ✅ ค้นหาคำสั่งซื้อ
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { userId: true },
+    });
+
+    if (!order) {
+      throw new Error("ไม่พบคำสั่งซื้อนี้");
+    }
+
+    // ✅ ตรวจสอบว่า ผู้ใช้เป็นเจ้าของคำสั่งซื้อนี้หรือไม่
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true },
+    });
+
+    if (!profile || order.userId !== profile.id) {
+      throw new Error("คุณไม่มีสิทธิ์ยกเลิกคำสั่งซื้อนี้");
+    }
+
+    // ✅ ลบคำสั่งซื้อจากฐานข้อมูล
+    await prisma.order.delete({
+      where: { id: orderId },
+    });
+
+    return { success: true, message: "ยกเลิกคำสั่งซื้อสำเร็จ" };
+  } catch (error) {
+    console.error("🔴 Error canceling order:", error);
+    return { success: false, error: error instanceof Error ? error.message : "ไม่สามารถยกเลิกคำสั่งซื้อได้" };
+  }
+}
+
+
+
+export async function fetchOrders() {
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        user: {
+          select: {
+            username: true, // ✅ ดึง username
+            table: { select: { tableNumber: true } }, // ✅ ดึง tableNumber แทน tableId
+          },
+        },
+        food: {
+          select: {
+            name: true,
+            price: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    // ✅ แปลงข้อมูลให้ใช้งานง่าย
+    const formattedOrders = orders.map((order) => ({
+      id: order.id,
+      foodName: order.food.name,
+      quantity: order.quantity,
+      totalPrice: order.totalPrice,
+      username: order.user?.username || "ไม่ทราบชื่อ",
+      tableNumber: order.user?.table?.[0]?.tableNumber || "ไม่มีโต๊ะ",
+      createdAt: order.createdAt,
+    }));
+
+    return { success: true, data: formattedOrders };
+  } catch (error) {
+    console.error("🔴 Error fetching orders:", error);
+    return { success: false, error: "ไม่สามารถดึงข้อมูลออเดอร์ได้" };
+  }
+}
+
+export async function fetchOrdersUser() {
+  try {
+    const user = await getAuthUser();
+    if (!user) {
+      console.error("🔴 Error: User is not logged in");
+      return { success: false, error: "โปรดเข้าสู่ระบบ" };
+    }
+
+    console.log("🟢 Authenticated User ID:", user.id);
+
+    // ✅ ค้นหา Profile ของผู้ใช้จาก Clerk ID
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: user.id },
+      select: { id: true, username: true },
+    });
+
+    if (!profile) {
+      console.error("🔴 Error: Profile not found for user:", user.id);
+      return { success: false, error: "ไม่พบโปรไฟล์ของคุณ" };
+    }
+
+    console.log("🟢 Profile Found:", profile.id, "Username:", profile.username);
+
+    // ✅ ดึงเฉพาะคำสั่งซื้อของผู้ใช้
+    const orders = await prisma.order.findMany({
+      where: { userId: profile.id }, // ✅ ใช้ userId ที่เชื่อมโยงกับ profile
+      include: {
+        food: { select: { name: true, price: true } }, // ✅ ดึงข้อมูลอาหาร
+        user: {
+          select: {
+            username: true,
+            table: { select: { tableNumber: true } }, // ✅ ดึง tableNumber แทน tableId
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    console.log("🟢 Orders Retrieved:", orders.length);
+
+    // ✅ แปลงข้อมูลให้ใช้งานง่าย
+    const formattedOrders = orders.map((order) => ({
+      id: order.id,
+      foodName: order.food?.name || "ไม่ทราบชื่อ", // ✅ ตรวจสอบ null safety
+      quantity: order.quantity,
+      totalPrice: order.quantity * (order.food?.price || 0), // ✅ ป้องกัน error null
+      username: order.user?.username || "ไม่ทราบชื่อ", // ✅ เพิ่ม username
+      tableNumber: order.user?.table?.length ? order.user.table[0].tableNumber : "ไม่มีโต๊ะ", // ✅ แก้ไขการดึง tableNumber
+      createdAt: order.createdAt,
+    }));
+    
+    return { success: true, data: formattedOrders };
+  } catch (error) {
+    console.error("🔴 Error fetching user orders:", error);
+    return { success: false, error: "ไม่สามารถดึงคำสั่งซื้อได้" };
   }
 }

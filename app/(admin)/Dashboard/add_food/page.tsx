@@ -1,5 +1,6 @@
 import AddFooDpage from "@/components/Dashboard/AddFood";
 import FoodTableCotainer from "@/components/Dashboard/FoodTableCotainer";
+import OrderedFood from "@/components/Dashboard/OrderedFood";
 // // import FoodTable from "@/components/Dashboard/FoodTable";
 // import FoodTableCotainer from "@/components/Dashboard/FoodTableCotainer";
 // import FoodTableList from "@/components/Dashboard/FoodTableList";
@@ -10,6 +11,7 @@ const AddFoodPage = () => {
       <div className="w-full p-6 shadow-lg rounded-lg bg-white">
         <AddFooDpage />
         <FoodTableCotainer />
+        <OrderedFood />
       </div>
     </div>
   );

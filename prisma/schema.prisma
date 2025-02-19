@@ -18,9 +18,12 @@ model Profile {
   profileImage String
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+
   favorites    Favorite[]
   foods        Food[]
   activities   UserActivity[]
+  table        Table[]
+  orders       Order[]
 }
 
 model Food {
@@ -32,8 +35,10 @@ model Food {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   profileId   String
+
   favorites   Favorite[]
   profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  orders       Order[]
 }
 
 model Favorite {
@@ -61,5 +66,21 @@ model Table {
   tableNumber     String   @unique
   seatingCapacity Int
   availableDate   DateTime
+  reservedById    String?    // ✅ อ้างอิง User ที่จอง
+  reservedAt      DateTime? // ✅ วันที่จอง
   createdAt       DateTime @default(now())
+
+  profile   Profile? @relation(fields: [reservedById], references: [id], onDelete: SetNull)
+}
+
+model Order {
+  id          String   @id @default(uuid()) // รหัสออเดอร์
+  userId      String   // รหัสโปรไฟล์ของผู้ใช้
+  foodId      String   // รหัสของอาหารที่สั่ง
+  quantity    Int      // จำนวนที่สั่ง
+  totalPrice  Int      // ราคาทั้งหมด
+  createdAt   DateTime @default(now()) // วันที่สั่ง
+
+  user  Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  food  Food    @relation(fields: [foodId], references: [id], onDelete: Cascade)
 }

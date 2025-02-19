@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useOptimistic, startTransition } from 'react';
 import { getTables, addTable, deleteTable } from '@/actions/actions';
+import ReservedTables from '@/components/Dashboard/ReservedTables';
 
 interface Table {
     id: string;
@@ -141,6 +142,7 @@ export default function TablesPage() {
                     </tbody>
                 </table>
             </div>
+            <ReservedTables />
         </div>
     );
 }
