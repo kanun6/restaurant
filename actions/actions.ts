@@ -6,7 +6,7 @@ import {
   profileSchema,
   ValidateEithZode,
 } from "@/utils/schemas";
-import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { uploadFile } from "@/utils/supabase";
@@ -312,5 +312,98 @@ export async function getTables() {
           return { success: false, error: error.message };
       }
       return { success: false, error: 'An unknown error occurred' };
+  }
+}
+
+export const fetchFavoriteStats = async () => {
+  try {
+    const favoriteStats = await prisma.favorite.groupBy({
+      by: ["foodId"],
+      _count: { foodId: true },
+      orderBy: { _count: { foodId: "desc" } },
+    });
+
+    // ดึงชื่ออาหารที่เกี่ยวข้อง
+    const foodData = await prisma.food.findMany({
+      where: {
+        id: { in: favoriteStats.map((fav) => fav.foodId) }
+      },
+      select: {
+        id: true,
+        name: true
+      }
+    });
+
+    // รวมข้อมูล
+    const result = favoriteStats.map((fav) => ({
+      foodName: foodData.find((food) => food.id === fav.foodId)?.name || "ไม่ทราบชื่อ",
+      favoriteCount: fav._count.foodId
+    }));
+
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("🔴 Error fetching favorite stats:", error);
+    return { success: false, error: "ไม่สามารถดึงข้อมูล Favorite ได้" };
+  }
+};
+
+export async function logUserActivity() {
+  try {
+    console.log("📌 Checking logged-in user...");
+
+    const session = await auth(); // ✅ ใช้ await เพื่อดึงข้อมูล
+    const userId = session.userId; // ✅ ดึง userId จาก session
+
+    if (!userId) {
+      console.log("❌ User not logged in.");
+      return { error: "Unauthorized" };
+    }
+
+    console.log("✅ Logged-in userId:", userId);
+
+    // ✅ ค้นหา Profile จาก Clerk userId
+    const profile = await prisma.profile.findUnique({
+      where: { clerkId: userId },
+    });
+
+    if (!profile) {
+      console.log("❌ Profile not found for userId:", userId);
+      return { error: "Profile not found" };
+    }
+
+    console.log("✅ Profile found:", profile.id, "for user:", userId);
+
+    // ✅ เช็คว่ามี log วันนี้แล้วหรือยัง
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const existingLog = await prisma.userActivity.findFirst({
+      where: {
+        profileId: profile.id,
+        loginAt: {
+          gte: today, // ✅ ดึง log เฉพาะของวันนี้
+        },
+      },
+    });
+
+    if (existingLog) {
+      console.log("🔄 User already logged today. Skipping...");
+      return { message: "User already logged today" };
+    }
+
+    console.log("🆕 Logging new UserActivity...");
+    await prisma.userActivity.create({
+      data: {
+        profileId: profile.id,
+        loginAt: new Date(),
+      },
+    });
+
+    console.log("✅ User activity logged successfully for user:", userId);
+    return { message: "User activity logged successfully" };
+
+  } catch (error) {
+    console.error("❌ Error logging user activity:", error);
+    return { error: "Internal Server Error" };
   }
 }

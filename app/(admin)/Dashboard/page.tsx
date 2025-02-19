@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import FavoriteChart from "@/components/Dashboard/FavoriteChart";
 
 Chart.register(...registerables);
 
@@ -18,6 +19,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function fetchData() {
       try {
+        // ✅ 1. เรียก `/api/get-profile-stats` ซึ่งมี `logUserActivity()` อยู่แล้ว
         const res = await fetch("/api/get-profile-stats");
         if (!res.ok) throw new Error("Failed to fetch data");
 
@@ -91,6 +93,7 @@ export default function Dashboard() {
             },
           }}
         />
+        <FavoriteChart />
       </div>
     </div>
   );
