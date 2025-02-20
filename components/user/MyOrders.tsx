@@ -19,8 +19,13 @@ export default function OrderedFood() {
   useEffect(() => {
     async function loadOrders() {
       const response = await fetchOrdersUser();
-      if (response.success) {
-        setOrders(response.data);
+      if (response.success && response.data) { // ✅ ตรวจสอบว่ามีข้อมูลก่อนใช้งาน
+        setOrders(
+          response.data.map(({ username: _, ...order }) => ({
+            ...order,
+            createdAt: new Date(order.createdAt).toISOString(), // ✅ แปลงเป็น string มาตรฐาน
+          }))
+        );
       } else {
         alert(`เกิดข้อผิดพลาด: ${response.error}`);
       }
@@ -28,10 +33,10 @@ export default function OrderedFood() {
     loadOrders();
   }, []);
 
-  // ✅ คำนวณราคารวมทั้งหมด
+  // คำนวณราคารวมทั้งหมด
   const totalAmount = orders.reduce((sum, order) => sum + order.totalPrice, 0);
 
-  // ✅ ฟังก์ชันยกเลิกคำสั่งซื้อ
+  // ฟังก์ชันยกเลิกคำสั่งซื้อ
   const handleCancelOrder = async (orderId: string) => {
     if (!confirm("คุณต้องการยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?")) return;
 
@@ -42,14 +47,14 @@ export default function OrderedFood() {
     if (response.success) {
       setOrders((prevOrders) => prevOrders.filter((order) => order.id !== orderId));
     } else {
-      alert(`❌ ไม่สามารถยกเลิกคำสั่งซื้อได้: ${response.error}`);
+      alert(`ไม่สามารถยกเลิกคำสั่งซื้อได้: ${response.error}`);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-        📋 คำสั่งซื้อของฉัน
+        คำสั่งซื้อของฉัน
       </h2>
 
       {orders.length > 0 ? (
@@ -71,7 +76,7 @@ export default function OrderedFood() {
                   <td className="border p-3 font-medium text-black">{order.foodName}</td>
                   <td className="border p-3 text-black">{order.quantity}</td>
                   <td className="border p-3 text-green-600 font-semibold">
-                    {order.totalPrice.toLocaleString("th-TH")}บาท
+                    {order.totalPrice.toLocaleString("th-TH")} บาท
                   </td>
                   <td className="border p-3 text-blue-600 font-semibold">
                     {order.tableNumber}
@@ -97,9 +102,9 @@ export default function OrderedFood() {
             </tbody>
           </table>
 
-          {/* ✅ แสดงราคารวมทั้งหมด */}
+          {/* แสดงราคารวมทั้งหมด */}
           <div className="text-right mt-4 text-xl font-bold text-green-700">
-            ราคารวมทั้งหมด: {totalAmount.toLocaleString("th-TH")}บาท
+            ราคารวมทั้งหมด: {totalAmount.toLocaleString("th-TH")} บาท
           </div>
         </div>
       ) : (

@@ -4,13 +4,20 @@ import { useEffect, useState } from "react";
 import { fetchFavoriteStats } from "@/actions/actions";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
+// ✅ กำหนด Type ให้กับข้อมูล Favorite
+interface FavoriteData {
+  foodName: string;
+  favoriteCount: number;
+}
+
 const FavoriteChart = () => {
-  const [data, setData] = useState<{ foodName: string; favoriteCount: number }[]>([]);
+  const [data, setData] = useState<FavoriteData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetchFavoriteStats();
-      if (response.success) {
+      const response = await fetchFavoriteStats(); // ✅ TypeScript จะเข้าใจโครงสร้าง response
+
+      if (response.success && response.data) {
         setData(response.data);
       } else {
         console.error(response.error);
@@ -21,7 +28,7 @@ const FavoriteChart = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl mx-auto">
-      <h2 className="text-xl font-bold text-center mb-4">🔥 เมนูยอดนิยมจาก Favorite</h2>
+      <h2 className="text-xl font-bold text-center mb-4">เมนูยอดนิยมจาก Favorite</h2>
       {data.length > 0 ? (
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data} layout="vertical">

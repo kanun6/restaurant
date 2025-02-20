@@ -7,7 +7,7 @@ interface Reservation {
   id: string;
   tableNumber: string;
   seatingCapacity: number;
-  reservedAt: string;
+  reservedAt: string; // ใช้ string
 }
 
 export default function ReservedTables() {
@@ -17,8 +17,11 @@ export default function ReservedTables() {
   useEffect(() => {
     async function loadReservations() {
       const response = await fetchReservationsUser();
-      if (response.success) {
-        setReservations(response.data);
+      if (response.success && response.data) { // ตรวจสอบว่ามีข้อมูลก่อนใช้งาน
+        setReservations(response.data.map((table) => ({
+          ...table,
+          reservedAt: table.reservedAt ? new Date(table.reservedAt).toISOString() : "", // แปลง Date | null เป็น string
+        })));
       } else {
         alert(`เกิดข้อผิดพลาด: ${response.error}`);
       }
@@ -26,7 +29,7 @@ export default function ReservedTables() {
     loadReservations();
   }, []);
 
-  // ✅ ฟังก์ชันยกเลิกการจองโต๊ะ
+  // ฟังก์ชันยกเลิกการจองโต๊ะ
   const handleCancelReservation = async (tableId: string) => {
     if (!confirm("คุณต้องการยกเลิกการจองโต๊ะนี้ใช่หรือไม่?")) return;
 
@@ -37,14 +40,14 @@ export default function ReservedTables() {
     if (response.success) {
       setReservations((prev) => prev.filter((table) => table.id !== tableId));
     } else {
-      alert(`❌ ไม่สามารถยกเลิกการจองได้: ${response.error}`);
+      alert(`ไม่สามารถยกเลิกการจองได้: ${response.error}`);
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-         โต๊ะที่คุณจองไว้
+        โต๊ะที่คุณจองไว้
       </h2>
 
       {reservations.length > 0 ? (
@@ -56,7 +59,7 @@ export default function ReservedTables() {
               </h3>
               <p className="text-gray-700">ที่นั่ง: {table.seatingCapacity}</p>
               <p className="text-gray-500">
-                จองเมื่อ: {new Date(table.reservedAt).toLocaleString()}
+                จองเมื่อ: {table.reservedAt ? new Date(table.reservedAt).toLocaleString() : "N/A"}
               </p>
               <button
                 onClick={() => handleCancelReservation(table.id)}
