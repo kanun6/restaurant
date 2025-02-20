@@ -30,7 +30,7 @@ export default function OrderedFood() {
 
   return (
     <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">📋 รายการอาหารที่ถูกสั่ง</h2>
+      <h2 className="text-xl font-semibold mb-4">รายการอาหารที่ถูกสั่ง</h2>
       {orders.length > 0 ? (
         <table className="w-full border-collapse border border-gray-300">
           <thead>

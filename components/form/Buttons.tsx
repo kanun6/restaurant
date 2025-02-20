@@ -63,3 +63,12 @@ variant='outline'
 </Button>
 }
 
+export const SingInOrderButton = () => {
+  return (
+    <SignInButton mode='modal'>
+      <Button size='lg' variant='outline'>
+        สั่งอาหาร
+      </Button>
+    </SignInButton>
+  );
+};

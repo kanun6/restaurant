@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FoodCardProps } from "@/utils/types";
 import FavoriteToggleButton from "./FavoriteToggleButton";
 import Link from "next/link";
-import OrderButton from "../food/OrderButton";
+import OrderToggleButton from "./OrderToggleButton";
 
 const FoodCard = ({ food }: { food: FoodCardProps }) => {
   const { name, id, image, price, description } = food;
@@ -37,7 +37,7 @@ const FoodCard = ({ food }: { food: FoodCardProps }) => {
         <FavoriteToggleButton foodId={id} />
       </div>
       <div>
-        <OrderButton foodId={food.id} />
+        <OrderToggleButton foodId={food.id} />
       </div>
     </article>
   );

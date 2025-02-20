@@ -6,7 +6,7 @@ import DeleteFoodButton from "./FoodDeleteButton";
 const FoodTable = ({ foods }: { foods: FoodCardProps[] }) => {
   return (
     <div className="overflow-x-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">🍽️ รายการอาหาร</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">รายการอาหาร</h1>
 
       <table className="min-w-full border-collapse border border-gray-300 rounded-lg">
         <thead className="bg-gray-200 text-gray-700">
@@ -40,7 +40,7 @@ const FoodTable = ({ foods }: { foods: FoodCardProps[] }) => {
               <td className="border border-gray-300 px-4 py-2 text-gray-600">
                 {food.description?.substring(0, 40) ?? ""}...
               </td>
-              <td className="border border-gray-300 px-4 py-2 text-right text-green-600 font-bold">
+              <td className="border border-gray-300 px-4 py-2 text-center text-green-600 font-bold">
                 {food.price.toLocaleString("th-TH")} บาท
               </td>
               <td className="border border-gray-300 px-4 py-2 text-center">
