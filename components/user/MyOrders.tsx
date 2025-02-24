@@ -19,11 +19,11 @@ export default function OrderedFood() {
   useEffect(() => {
     async function loadOrders() {
       const response = await fetchOrdersUser();
-      if (response.success && response.data) { // ✅ ตรวจสอบว่ามีข้อมูลก่อนใช้งาน
+      if (response.success && response.data) { // ตรวจสอบว่ามีข้อมูลก่อนใช้งาน
         setOrders(
           response.data.map(({ username: _, ...order }) => ({
             ...order,
-            createdAt: new Date(order.createdAt).toISOString(), // ✅ แปลงเป็น string มาตรฐาน
+            createdAt: new Date(order.createdAt).toISOString(),
           }))
         );
       } else {

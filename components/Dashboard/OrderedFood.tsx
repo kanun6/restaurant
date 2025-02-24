@@ -19,9 +19,14 @@ export default function OrderedFood() {
   useEffect(() => {
     async function loadOrders() {
       const response = await fetchOrders();
-      if (response.success) {
-        setOrders(response.data);
+      console.log(response); // ตรวจสอบค่าที่ได้รับจาก API
+      if (response.success && Array.isArray(response.data)) {
+        setOrders(response.data.map(order => ({
+          ...order,
+          createdAt: typeof order.createdAt === 'string' ? order.createdAt : new Date(order.createdAt).toISOString(),
+        })));
       } else {
+        setOrders([]);
         alert(`เกิดข้อผิดพลาด: ${response.error}`);
       }
     }
