@@ -9,7 +9,7 @@ interface Table {
   seatingCapacity: number;
   availableDate: string;
   reservedAt: string;
-  profile?: { username: string; email: string }; // ✅ เพิ่ม email ของผู้จอง
+  profile?: { username: string; email: string }; 
 }
 
 export default function ReservedTables() {

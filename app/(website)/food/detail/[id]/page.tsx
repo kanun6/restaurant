@@ -7,9 +7,8 @@ import OrderButton from "@/components/food/OrderButton";
 import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
-// ไม่จำเป็นต้องสร้าง Interface เอง ถ้าใช้ Next.js App Router
-export const FoodDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = await params;
+export default async function Page({ params }: { params: { id: string } }) {
+  const { id } = params;
   const food = await fetchFoodsdetail({ id });
 
   if (!food) {
@@ -39,6 +38,4 @@ export const FoodDetailPage = async ({ params }: { params: Promise<{ id: string 
       </section>
     </section>
   );
-};
-
-export default FoodDetailPage;
+}
