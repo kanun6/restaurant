@@ -18,7 +18,7 @@ const promotions = [
 
 const FoodPromotion = () => {
   return (
-    <div className="w-full max-w-6xl mx-auto p-4"> 
+    <div className="w-full"> 
       <Swiper
         modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={10}
@@ -34,7 +34,7 @@ const FoodPromotion = () => {
               src={image}
               alt={`Promotion ${index + 1}`}
               width={1200}
-              height={400} // ✅ ลดความสูงให้สมดุลกับพื้นที่
+              height={400}
               className="w-full h-auto object-cover rounded-lg"
             />
           </SwiperSlide>

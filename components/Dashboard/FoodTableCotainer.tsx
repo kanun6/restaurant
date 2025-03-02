@@ -7,8 +7,6 @@ const FoodTableCotainer = async ({search}:{search?:string}) => {
   const foods:FoodCardProps[] = await fetchFoods({search})
   console.log(foods)
 
-
-
   return (
     <div>
       <FoodTableList foods={foods}/>
