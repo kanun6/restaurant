@@ -7,8 +7,9 @@ import OrderButton from "@/components/food/OrderButton";
 import Price from "@/components/food/Price";
 import { redirect } from "next/navigation";
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const food = await fetchFoodsdetail({ id });
 
   if (!food) {
