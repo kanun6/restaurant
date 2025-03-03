@@ -35,7 +35,7 @@ const AddFooDpage = async () => {
             labelText="Description"
             defaultValue=""
           />
-          <SubmitButton text="Add Menu" size="lg" className="" />
+          <SubmitButton text="Add Menu" size="lg" className=""/>
         </FormContainer>
       </div>
     </section>

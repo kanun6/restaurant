@@ -6,7 +6,7 @@ import DeleteFoodButton from "./FoodDeleteButton";
 const FoodTable = ({ foods }: { foods: FoodCardProps[] }) => {
   return (
     <div className="overflow-x-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">รายการอาหาร</h1>
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">รายการอาหาร</h1>
 
       <table className="min-w-full border-collapse border border-gray-300 rounded-lg">
         <thead className="bg-gray-200 text-gray-700">

@@ -42,7 +42,7 @@ export default function UserTablesPage() {
                 {table.reservedById ? "ถูกจองแล้ว" : "ว่าง"}
               </p>
 
-              {/* ✅ ปุ่มจอง / ยกเลิกการจอง */}
+              {/*ปุ่มจอง / ยกเลิกการจอง */}
               <ReserveTableButton tableId={table.id} isReserved={!!table.reservedById} />
             </div>
           ))}

@@ -9,7 +9,7 @@ const ReserveTableButton = ({ tableId, isReserved }: { tableId: string; isReserv
   const [loading, setLoading] = useState(false);
 
   const handleReservation = async () => {
-    console.log("🟢 กำลังจองโต๊ะ ID:", tableId); // ✅ ตรวจสอบว่า tableId ถูกต้อง
+    console.log("🟢 กำลังจองโต๊ะ ID:", tableId); 
     if (!tableId) {
       alert("เกิดข้อผิดพลาด: ไม่พบหมายเลขโต๊ะ");
       return;
